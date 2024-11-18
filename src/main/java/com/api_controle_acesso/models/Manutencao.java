@@ -1,13 +1,10 @@
 package com.api_controle_acesso.models;
-
 import java.time.LocalDate;
-
 import com.api_controle_acesso.DTOs.ManutencaoDTO.ManutencaoPostDTO;
-import com.api_controle_acesso.models.enums.Criticidade;
+import com.api_controle_acesso.DTOs.ManutencaoDTO.ManutencaoPutDTO;
 import com.api_controle_acesso.models.enums.TipoManutencao;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -17,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,9 +31,8 @@ public class Manutencao {
 
     public Manutencao(ManutencaoPostDTO manutencaoPostDTO) {
         this.tipoManutencao = manutencaoPostDTO.tipoManutencao();
-        this.ativo = manutencaoPostDTO.criticidade();
+        this.ativo = manutencaoPostDTO.ativo();
         this.descricao = manutencaoPostDTO.descricao();
-        this.concluida = manutencaoPostDTO.concluida();
         this.setor = manutencaoPostDTO.setor();
         this.usuario = manutencaoPostDTO.usuario();
         this.prazo = manutencaoPostDTO.prazo();
@@ -76,4 +73,34 @@ public class Manutencao {
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
     private Subconjunto subconjunto;
+
+    public void update(@Valid ManutencaoPutDTO manutencaoPutDTO) {
+
+        if (manutencaoPutDTO.tipoManutencao() != null)
+            this.tipoManutencao = manutencaoPutDTO.tipoManutencao();
+
+        if (manutencaoPutDTO.ativo() != null)
+            this.ativo = manutencaoPutDTO.ativo();
+
+        if (manutencaoPutDTO.descricao() != null)
+            this.descricao = manutencaoPutDTO.descricao();
+
+        if (!manutencaoPutDTO.concluida())
+            this.concluida = manutencaoPutDTO.concluida();
+        else
+            this.concluida = manutencaoPutDTO.concluida();
+
+        if (manutencaoPutDTO.setor() != null)
+            this.setor = manutencaoPutDTO.setor();
+
+        if (manutencaoPutDTO.usuario() != null)
+            this.usuario = manutencaoPutDTO.usuario();
+
+        if (manutencaoPutDTO.prazo() != null)
+            this.prazo = manutencaoPutDTO.prazo();
+
+        if (manutencaoPutDTO.subconjunto() != null)
+            this.subconjunto = manutencaoPutDTO.subconjunto();
+
+    }
 }

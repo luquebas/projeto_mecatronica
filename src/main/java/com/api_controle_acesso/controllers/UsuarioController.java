@@ -27,7 +27,7 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("usuario")
+@RequestMapping("/usuario")
 public class UsuarioController {
 
     @Autowired
@@ -57,7 +57,7 @@ public class UsuarioController {
     }
 
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<Object> getUsuario(@PathVariable Long id) {
         var usuario = usuarioService.visualizarUsuario(id);
@@ -66,12 +66,12 @@ public class UsuarioController {
 
     @PutMapping
     @Transactional
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<Object> updateUsuario(@Valid @RequestBody UsuarioPutDTO usuarioPutDTO) {
         var usuario = usuarioService.visualizarUsuario(usuarioPutDTO.id());
         
-        if (usuarioPutDTO.setor_id() != null) {
-            var setor = setorService.visualizarSetor(usuarioPutDTO.setor_id());
+        if (usuarioPutDTO.setor() != null) {
+            var setor = setorService.visualizarSetor(usuarioPutDTO.setor().getId());
             usuario.setSetor(setor);
         }
         
@@ -81,9 +81,9 @@ public class UsuarioController {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-    @PutMapping("/{id}")
+    @PutMapping("/admin/{id}")
     @Transactional
-    public ResponseEntity<Object> updateRole(@PathVariable Long id) {
+    public ResponseEntity<Object> updateRoleAdmin(@PathVariable Long id) {
 
         var usuario = usuarioService.visualizarUsuario(id);
         usuario.setRole(Role.ROLE_ADMIN);
@@ -91,7 +91,18 @@ public class UsuarioController {
         return ResponseEntity.ok().build();
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PutMapping("/intermediate/{id}")
+    @Transactional
+    public ResponseEntity<Object> updateRoleIntermediate(@PathVariable Long id) {
+
+        var usuario = usuarioService.visualizarUsuario(id);
+        usuario.setRole(Role.ROLE_INTERMEDIATE);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<Object> deleteUsuario(@PathVariable Long id) {

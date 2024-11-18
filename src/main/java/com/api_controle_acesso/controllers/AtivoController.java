@@ -1,5 +1,8 @@
 package com.api_controle_acesso.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,11 +39,26 @@ public class AtivoController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<Object> visualizarAtivo(@PathVariable Long id) {
         
         var ativo = ativoService.visualizarAtivo(id);
         return ResponseEntity.ok().body(new AtivoReturnGetDTO(ativo));
+    }
+    
+    @GetMapping("/subconjuntos/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<Object> visualizarSubconjuntosPeloAtivo(@PathVariable Long id) {
+        
+        var subconjuntos = ativoService.visualizarSubconjuntos(id);
+        return ResponseEntity.ok().body(subconjuntos);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @GetMapping
+    public ResponseEntity<Page<AtivoReturnGetDTO>> getAtivos(@PageableDefault(size = 10, sort = {"nome"}) Pageable pageable) {
+
+        return ResponseEntity.ok(ativoService.visualizarAtivos(pageable));
     }
 
     @PutMapping

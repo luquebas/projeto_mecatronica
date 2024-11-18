@@ -18,7 +18,6 @@ import com.api_controle_acesso.DTOs.AuthDTO.ResetPasswordDTO;
 import com.api_controle_acesso.DTOs.AuthDTO.TokenDTO;
 import com.api_controle_acesso.DTOs.AuthDTO.VerifyCodeDTO;
 import com.api_controle_acesso.models.Usuario;
-import com.api_controle_acesso.services.EmailService;
 import com.api_controle_acesso.services.JWTService;
 import com.api_controle_acesso.services.PasswordResetTokenService;
 import com.api_controle_acesso.services.UsuarioService;
@@ -37,14 +36,14 @@ public class autenticacaoController {
     @Autowired
     private UsuarioService usuarioService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    // @Autowired
+    // private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private PasswordResetTokenService passwordResetTokenService;
+    // @Autowired
+    // private PasswordResetTokenService passwordResetTokenService;
 
-    @Autowired
-    private EmailService emailService;
+    // @Autowired
+    // private EmailService emailService;
 
     @Autowired
     HttpServletRequest request;
@@ -70,54 +69,54 @@ public class autenticacaoController {
         return ResponseEntity.ok().build();
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    @PostMapping("/resetpassword")
-    public ResponseEntity<String> resetarSenha(@RequestHeader(name = "Authorization", defaultValue = "") String token, @RequestBody ResetPasswordDTO newPassword) {
-        boolean isValidToken = jwtService.tokenValido(token);
-        if (isValidToken) {
-            var usuario = usuarioService.findUsuarioByEmail(jwtService.getSubject(token));
-            usuario.setSenha(passwordEncoder.encode(newPassword.senha()));
+    // @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    // @PostMapping("/resetpassword")
+    // public ResponseEntity<String> resetarSenha(@RequestHeader(name = "Authorization", defaultValue = "") String token, @RequestBody ResetPasswordDTO newPassword) {
+    //     boolean isValidToken = jwtService.tokenValido(token);
+    //     if (isValidToken) {
+    //         var usuario = usuarioService.findUsuarioByEmail(jwtService.getSubject(token));
+    //         usuario.setSenha(passwordEncoder.encode(newPassword.senha()));
             
-            usuarioService.updateUsuario(usuario);
+    //         usuarioService.updateUsuario(usuario);
 
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
-    }
+    //         return ResponseEntity.noContent().build();
+    //     } else {
+    //         return ResponseEntity.badRequest().build();
+    //     }
+    // }
 
-    @PostMapping("/requestcode")
-    public ResponseEntity<String> requestCode(@RequestBody RequestCodeDTO requestCodeDTO) {
-        var usuario = usuarioService.findUsuarioByEmail(requestCodeDTO.email());
-        if (usuario != null) {
-            String verificationCode = passwordResetTokenService.generateVerificationCode(usuario.getEmail());
-            emailService.sendPasswordResetCode(usuario.getEmail(), verificationCode);
+    // @PostMapping("/requestcode")
+    // public ResponseEntity<String> requestCode(@RequestBody RequestCodeDTO requestCodeDTO) {
+    //     var usuario = usuarioService.findUsuarioByEmail(requestCodeDTO.email());
+    //     if (usuario != null) {
+    //         String verificationCode = passwordResetTokenService.generateVerificationCode(usuario.getEmail());
+    //         emailService.sendPasswordResetCode(usuario.getEmail(), verificationCode);
 
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
+    //         return ResponseEntity.ok().build();
+    //     } else {
+    //         return ResponseEntity.notFound().build();
+    //     }
+    // }
 
-    @PostMapping("/verifycode")
-    public ResponseEntity<Object> verifyCode(@RequestBody VerifyCodeDTO verifyCodeDTO) {
-        boolean isValidCode = passwordResetTokenService.verifyVerificationCode(verifyCodeDTO.email(), verifyCodeDTO.code());
-        if (!isValidCode) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Código de verificação inválido.");
-        }
+    // @PostMapping("/verifycode")
+    // public ResponseEntity<Object> verifyCode(@RequestBody VerifyCodeDTO verifyCodeDTO) {
+    //     boolean isValidCode = passwordResetTokenService.verifyVerificationCode(verifyCodeDTO.email(), verifyCodeDTO.code());
+    //     if (!isValidCode) {
+    //         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Código de verificação inválido.");
+    //     }
 
-        var usuario = usuarioService.findUsuarioByEmail(verifyCodeDTO.email());
+    //     var usuario = usuarioService.findUsuarioByEmail(verifyCodeDTO.email());
         
-        if (usuario == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário não encontrado.");
-        }
+    //     if (usuario == null) {
+    //         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário não encontrado.");
+    //     }
 
-        String jwtToken = jwtService.gerarToken(usuario);
+    //     String jwtToken = jwtService.gerarToken(usuario);
 
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+    //     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
+    //     SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return ResponseEntity.ok(new TokenDTO(usuario.getId(), usuario.getNome(), usuario.getEmail(), jwtToken, usuario.getRole()));
+    //     return ResponseEntity.ok(new TokenDTO(usuario.getId(), usuario.getNome(), usuario.getEmail(), jwtToken, usuario.getRole()));
 
-    }
+    // }
 }

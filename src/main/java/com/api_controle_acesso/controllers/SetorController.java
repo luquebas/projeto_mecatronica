@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 import com.api_controle_acesso.DTOs.SetorDTO.SetorPostDTO;
 import com.api_controle_acesso.DTOs.SetorDTO.SetorPutDTO;
+import com.api_controle_acesso.DTOs.SetorDTO.SetorReturnDTO;
 import com.api_controle_acesso.DTOs.SetorDTO.SetorReturnGetDTO;
 import com.api_controle_acesso.services.SetorService;
 import jakarta.transaction.Transactional;
@@ -35,17 +36,17 @@ public class SetorController {
         var setor = setorService.criarSetor(setorPostDTO);
         var uri = uriComponentsBuilder.path("curso/{id}").buildAndExpand(setor.getId()).toUri();
 
-        return ResponseEntity.created(uri).body(new SetorReturnGetDTO(setor));
+        return ResponseEntity.created(uri).body(new SetorReturnDTO(setor));
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_INTERMEDIATE')")
     public ResponseEntity<Page<SetorReturnGetDTO>> visualizarSetores(@PageableDefault(size = 10, sort = {"nome"}) Pageable pageable) {
         return ResponseEntity.ok().body(setorService.visualizarSetores(pageable));
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_INTERMEDIATE')")
     public ResponseEntity<Object> visualizarSetor(@PathVariable Long id) {
         
         var setor = setorService.visualizarSetor(id);

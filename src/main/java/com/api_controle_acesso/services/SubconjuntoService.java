@@ -1,9 +1,10 @@
 package com.api_controle_acesso.services;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import com.api_controle_acesso.DTOs.SubconjuntoDTO.SubconjuntoPostDTO;
+import com.api_controle_acesso.DTOs.SubconjuntoDTO.SubconjuntoReturnGetDTO;
 import com.api_controle_acesso.models.Subconjunto;
 import com.api_controle_acesso.repositories.SubconjuntoRepository;
 
@@ -22,6 +23,11 @@ public class SubconjuntoService {
 
     public Subconjunto visualizarSubconjunto(Long id) {
         return subconjuntoRepository.getReferenceById(id);
+    }
+
+    public Page<SubconjuntoReturnGetDTO> visualizarSubconjuntos(Pageable pageable) {
+        var page = subconjuntoRepository.findAll(pageable).map(SubconjuntoReturnGetDTO::new);
+        return page;
     }
 
     public void deleteSubconjunto(Long id) {

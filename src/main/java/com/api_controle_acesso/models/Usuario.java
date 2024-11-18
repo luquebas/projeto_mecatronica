@@ -52,7 +52,7 @@ public class Usuario implements UserDetails {
     private String nome;
 
     @JoinColumn(name = "setor_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JsonBackReference
     private Setor setor;
 
