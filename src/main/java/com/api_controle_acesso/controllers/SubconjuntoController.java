@@ -52,7 +52,7 @@ public class SubconjuntoController {
         return ResponseEntity.ok().body(new SubconjuntoReturnGetDTO(subconjunto));
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_INTERMEDIATE')")
     @GetMapping
     public ResponseEntity<Page<SubconjuntoReturnGetDTO>> getSubconjuntos(@PageableDefault(size = 10, sort = {"nome"}) Pageable pageable) {
 
@@ -61,7 +61,7 @@ public class SubconjuntoController {
 
     @PutMapping
     @Transactional
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_INTERMEDIATE')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<Object> atualizarSubconjunto(@RequestBody @Valid SubconjuntoPutDTO subconjuntoPutDTO) {
         Ativo ativo = ativoService.visualizarAtivo(subconjuntoPutDTO.ativo().getId());
 

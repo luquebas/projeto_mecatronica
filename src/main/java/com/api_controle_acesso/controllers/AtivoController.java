@@ -39,7 +39,7 @@ public class AtivoController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_INTERMEDIATE')")
     public ResponseEntity<Object> visualizarAtivo(@PathVariable Long id) {
         
         var ativo = ativoService.visualizarAtivo(id);
@@ -54,7 +54,7 @@ public class AtivoController {
         return ResponseEntity.ok().body(subconjuntos);
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_INTERMEDIATE')")
     @GetMapping
     public ResponseEntity<Page<AtivoReturnGetDTO>> getAtivos(@PageableDefault(size = 10, sort = {"nome"}) Pageable pageable) {
 

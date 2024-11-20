@@ -66,7 +66,7 @@ public class NotificacaoController {
 
     @PutMapping
     @Transactional
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_INTERMEDIATE')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<Object> atualizarNotificacao(@RequestBody @Valid NotificacaoPutDTO notificacaoPutDTO) {
         Usuario usuario = usuarioService.visualizarUsuario(notificacaoPutDTO.usuario().getId());
 

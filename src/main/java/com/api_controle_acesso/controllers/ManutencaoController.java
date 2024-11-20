@@ -117,7 +117,7 @@ public class ManutencaoController {
 
     @PutMapping
     @Transactional
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_INTERMEDIATE')")
     public ResponseEntity<Object> atualizarManutencao(@RequestBody @Valid ManutencaoPutDTO manutencaoPutDTO) {
         
         if (manutencaoPutDTO.tipoManutencao() == TipoManutencao.PREVENTIVA) {
