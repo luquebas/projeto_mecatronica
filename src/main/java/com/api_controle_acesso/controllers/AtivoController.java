@@ -47,7 +47,7 @@ public class AtivoController {
     }
     
     @GetMapping("/subconjuntos/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_INTERMEDIATE')")
     public ResponseEntity<Object> visualizarSubconjuntosPeloAtivo(@PathVariable Long id) {
         
         var subconjuntos = ativoService.visualizarSubconjuntos(id);

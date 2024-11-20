@@ -6,7 +6,11 @@ import org.springframework.stereotype.Service;
 import com.api_controle_acesso.DTOs.ManutencaoDTO.ManutencaoPostDTO;
 import com.api_controle_acesso.DTOs.ManutencaoDTO.ManutencaoReturnGetDTO;
 import com.api_controle_acesso.exceptions.ValidacaoException;
+import com.api_controle_acesso.models.Ativo;
 import com.api_controle_acesso.models.Manutencao;
+import com.api_controle_acesso.models.Setor;
+import com.api_controle_acesso.models.Subconjunto;
+import com.api_controle_acesso.models.Usuario;
 import com.api_controle_acesso.models.enums.TipoManutencao;
 import com.api_controle_acesso.repositories.ManutencaoRepository;
 
@@ -19,7 +23,7 @@ public class ManutencaoService {
     @Autowired
     private ValidadorDataUtilService validadorDataUtilService;
 
-    public Manutencao criarManutencao(ManutencaoPostDTO manutencaoPostDTO) {
+    public Manutencao criarManutencao(ManutencaoPostDTO manutencaoPostDTO, Ativo ativo, Setor setor, Usuario usuario, Subconjunto subconjunto) {
         if (manutencaoPostDTO.tipoManutencao() == TipoManutencao.PREVENTIVA) {
             if(validadorDataUtilService.isDiaUtil(manutencaoPostDTO.prazo())) {
                 throw new ValidacaoException("Não é possível realizar Manutenções preventivas em dias úteis");
@@ -27,6 +31,14 @@ public class ManutencaoService {
         }
         
         var manutencao = new Manutencao(manutencaoPostDTO);
+        manutencao.setUsuario(usuario);
+        manutencao.setAtivo(ativo);
+        manutencao.setSetor(setor);
+        if (subconjunto != null) 
+            manutencao.setSubconjunto(subconjunto);
+        else 
+            manutencao.setSubconjunto(null);
+            
         manutencao.setConcluida(false);
         manutencaoRepository.save(manutencao);
 

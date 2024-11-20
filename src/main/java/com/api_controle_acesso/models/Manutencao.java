@@ -69,7 +69,7 @@ public class Manutencao {
     @Column(name = "prazo")
     private LocalDate prazo;
 
-    @JoinColumn(name = "subconjunto_id")
+    @JoinColumn(name = "subconjunto_id", nullable = true)
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
     private Subconjunto subconjunto;

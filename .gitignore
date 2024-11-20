@@ -5,5 +5,3 @@ target/
 !**/src/test/**/target/
 
 
-### VS Code ###
-.vscode/

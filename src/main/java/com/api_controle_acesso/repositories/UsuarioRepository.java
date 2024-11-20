@@ -7,4 +7,5 @@ import com.api_controle_acesso.models.Usuario;
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     Usuario findByEmail(String email);
+    boolean existsByEmail(String email);
 }
